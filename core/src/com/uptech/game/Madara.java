@@ -33,9 +33,11 @@ public class Madara {
     }
 
     public void animation(float time){
+
         batch.begin();
         if(characterState.equals("idle")) {
             batch.draw(idleAnimation.getKeyFrame(time, true), 100, 100, 100, 150);
+            stateTime = 0f;
         }
         if(characterState.equals("punch")){
             stateTime += Gdx.graphics.getDeltaTime();
@@ -43,6 +45,7 @@ public class Madara {
             if (punchAnimation.isAnimationFinished(stateTime)){
                 characterState = "idle";
             }
+
         }
 
         batch.end();
