@@ -12,6 +12,10 @@ public class Madara {
     private SpriteBatch batch = new SpriteBatch();
     private String characterState = "idle";
     private float stateTime = 0f;
+    private float currentX = 100;
+    private float currentY = 100;
+    private float width = 100;
+    private float height = 150;
 
 //    Texture Atlas Creation
     private TextureAtlas idleAtlas = new TextureAtlas("madara/idle1sheet/idle1spritesheet.atlas");
@@ -36,12 +40,12 @@ public class Madara {
 
         batch.begin();
         if(characterState.equals("idle")) {
-            batch.draw(idleAnimation.getKeyFrame(time, true), 100, 100, 100, 150);
+            batch.draw(idleAnimation.getKeyFrame(time, true), currentX, currentY, width, height);
             stateTime = 0f;
         }
         if(characterState.equals("punch")){
             stateTime += Gdx.graphics.getDeltaTime();
-            batch.draw(punchAnimation.getKeyFrame(stateTime, false), 100,100, 100, 150);
+            batch.draw(punchAnimation.getKeyFrame(stateTime, false), currentX,currentY, width, height);
             if (punchAnimation.isAnimationFinished(stateTime)){
                 characterState = "idle";
             }
