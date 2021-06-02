@@ -1,0 +1,34 @@
+
+deathSpriteSheet.png
+size: 256, 64
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+death1
+  rotate: false
+  xy: 55, 2
+  size: 50, 32
+  orig: 50, 32
+  offset: 0, 0
+  index: -1
+death2
+  rotate: false
+  xy: 2, 2
+  size: 51, 32
+  orig: 51, 32
+  offset: 0, 0
+  index: -1
+death3
+  rotate: false
+  xy: 159, 2
+  size: 41, 32
+  orig: 41, 32
+  offset: 0, 0
+  index: -1
+death4
+  rotate: false
+  xy: 107, 2
+  size: 50, 32
+  orig: 50, 32
+  offset: 0, 0
+  index: -1

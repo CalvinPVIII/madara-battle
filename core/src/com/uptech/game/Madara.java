@@ -24,16 +24,38 @@ public class Madara {
 
 //    Animation Creation
     private com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> idleAnimation = new com.badlogic.gdx.graphics.g2d.Animation<TextureRegion>(1/3f, idleAtlas.getRegions());
-    private com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> punchAnimation = new com.badlogic.gdx.graphics.g2d.Animation<TextureRegion>(1/10f, punchAtlas.getRegions());
+    private com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> punchAnimation = new com.badlogic.gdx.graphics.g2d.Animation<TextureRegion>(1/20f, punchAtlas.getRegions());
+
+// Sounds
+    private Sound punchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/punch1.wav"));
+    private Sound missSound = Gdx.audio.newSound(Gdx.files.internal("sounds/miss1.wav"));
 
 
     public Madara(){
     }
 
 
-    public void animationControler(){
-        if (Gdx.input.isKeyPressed(Input.Keys.P)){
+    public void animationControler(Enemy enemy){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)){
             characterState = "punch";
+            if (width < 0 ){
+                width *= -1;
+            }
+            currentX ++;
+            if(currentX - enemy.getX() <= 100 && currentX - enemy.getX() >= -100) {
+                enemy.damageTaken();
+                punchSound.play();
+            }else{
+                missSound.play();
+            }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)){
+            characterState = "punch";
+            if (width > 0){
+                width *= -1;
+            }
+            currentX --;
+
         }
 
     }
@@ -61,6 +83,10 @@ public class Madara {
     public void dispose(){
         punchAtlas.dispose();
         idleAtlas.dispose();
+    }
+
+    public float getX(){
+        return currentX;
     }
 
 }

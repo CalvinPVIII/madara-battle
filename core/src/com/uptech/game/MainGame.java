@@ -42,9 +42,10 @@ public class MainGame extends ApplicationAdapter {
 		elapsedTime += Gdx.graphics.getDeltaTime();
 		camera.update();
 		background.renderBackground(camera);
-		madara.animationControler();
+		madara.animationControler(enemy);
 		madara.animation(elapsedTime);
-		enemy.spawn();
+		enemy.Ai(madara.getX());
+		enemy.animations();
 
 
 	}
