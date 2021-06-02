@@ -18,12 +18,14 @@ public class MainGame extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	final float MAX_WIDTH = 160;
 	final float MAX_HEIGHT = 90;
+	private Enemy enemy;
 
 
 	
 	@Override
 	public void create () {
 		madara = new Madara();
+		enemy = new Enemy();
 		background = new Background();
 		background.setPosition(0,0);
 		background.setSize(MAX_WIDTH, MAX_HEIGHT);
@@ -42,6 +44,7 @@ public class MainGame extends ApplicationAdapter {
 		background.renderBackground(camera);
 		madara.animationControler();
 		madara.animation(elapsedTime);
+		enemy.spawn();
 
 
 	}

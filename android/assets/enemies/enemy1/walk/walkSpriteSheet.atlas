@@ -1,0 +1,27 @@
+
+walkspriteSheet.png
+size: 128, 64
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+walk1
+  rotate: false
+  xy: 46, 2
+  size: 39, 39
+  orig: 39, 39
+  offset: 0, 0
+  index: -1
+walk2
+  rotate: false
+  xy: 87, 2
+  size: 34, 39
+  orig: 34, 39
+  offset: 0, 0
+  index: -1
+walk3
+  rotate: false
+  xy: 2, 3
+  size: 42, 38
+  orig: 42, 38
+  offset: 0, 0
+  index: -1
