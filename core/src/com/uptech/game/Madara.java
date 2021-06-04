@@ -12,7 +12,7 @@ public class Madara {
     private SpriteBatch batch = new SpriteBatch();
     private String characterState = "idle";
     private float stateTime = 0f;
-    private float currentX = 100;
+    private float currentX = 300;
     private float currentY = 100;
     private float width = 100;
     private float height = 150;
@@ -35,26 +35,33 @@ public class Madara {
     }
 
 
-    public void animationControler(Enemy enemy){
+    public void animationControler(EnemyWave enemies){
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)){
             characterState = "punch";
             if (width < 0 ){
                 width *= -1;
             }
-            currentX ++;
-            if(currentX - enemy.getX() <= 100 && currentX - enemy.getX() >= -100) {
-                enemy.damageTaken();
+            currentX += 10;
+            if(currentX - enemies.getLeftEnemies().get(0).getX() >= -130){
+                enemies.getLeftEnemies().get(0).damageTaken();
                 punchSound.play();
             }else{
                 missSound.play();
             }
+
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)){
             characterState = "punch";
             if (width > 0){
                 width *= -1;
             }
-            currentX --;
+            currentX -= 10;
+            if(currentX - enemies.getRightEnemies().get(0).getX() <= 130){
+                enemies.getRightEnemies().get(0).damageTaken();
+                punchSound.play();
+            }else{
+                missSound.play();
+            }
 
         }
 

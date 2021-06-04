@@ -19,13 +19,16 @@ public class MainGame extends ApplicationAdapter {
 	final float MAX_WIDTH = 160;
 	final float MAX_HEIGHT = 90;
 	private Enemy enemy;
+	private EnemyWave enemyWave;
 
 
 	
 	@Override
 	public void create () {
 		madara = new Madara();
-		enemy = new Enemy();
+		enemyWave = new EnemyWave();
+		enemyWave.addLeftEnemies(1);
+		enemyWave.addRightEnemies(1);
 		background = new Background();
 		background.setPosition(0,0);
 		background.setSize(MAX_WIDTH, MAX_HEIGHT);
@@ -42,10 +45,10 @@ public class MainGame extends ApplicationAdapter {
 		elapsedTime += Gdx.graphics.getDeltaTime();
 		camera.update();
 		background.renderBackground(camera);
-		madara.animationControler(enemy);
+		madara.animationControler(enemyWave);
 		madara.animation(elapsedTime);
-		enemy.Ai(madara.getX());
-		enemy.animations();
+		enemyWave.renderLeftEnemies(madara, elapsedTime);
+		enemyWave.renderRightEnemies(madara, elapsedTime);
 
 
 	}
