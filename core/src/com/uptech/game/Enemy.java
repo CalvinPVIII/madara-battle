@@ -1,14 +1,19 @@
 package com.uptech.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+
 public class Enemy {
 
     private SpriteBatch batch = new SpriteBatch();
-    private String characterState = "idle";
+    private String characterState;
     private float stateTime = 0f;
     private float currentX;
     private float currentY = 110;
@@ -17,6 +22,8 @@ public class Enemy {
     private float difficultyModifier = 4 ;
     private boolean facingRight;
     private int health = 1;
+
+    private Sound missSound = Gdx.audio.newSound(Gdx.files.internal("sounds/miss1.wav"));
 
     //    Texture Atlas Creation
     private TextureAtlas idleAtlas = new TextureAtlas("enemies/enemy1/idle/idleSpriteSheet.atlas");
@@ -45,7 +52,7 @@ public class Enemy {
     }
 
     public void Ai(float madaraX){
-        batch.begin();
+
 
         if(health == 0){
             characterState = "dead";
@@ -57,23 +64,39 @@ public class Enemy {
 
 
         }
-        if (currentX > madaraX + 100&& health > 0) {
+        if (!attackInRange(madaraX) && health > 0 && facingRight == false) {
             characterState = "walking";
             currentX -= 2* difficultyModifier;
 
         }
-        if (currentX < madaraX - 100 && health > 0){
+        if (!attackInRange(madaraX) && health > 0 && facingRight){
             characterState = "walking";
             currentX += 2* difficultyModifier;
         }
 
 
-        if (currentX <= madaraX + 100 && health > 0){
-            characterState = "idle";
+        if (attackInRange(madaraX) && health > 0){
+
+
 
         }
-        batch.end();
 
+
+
+    }
+
+    public void attack(){
+
+    }
+
+    public boolean attackInRange(float madaraX){
+        if (facingRight && currentX >= madaraX - 50){
+            return true;
+        }
+        if (!facingRight && currentX <= madaraX + 100){
+            return true;
+        }
+        return false;
     }
 
 
@@ -91,6 +114,8 @@ public class Enemy {
             batch.draw(deathAnimation.getKeyFrame(stateTime, false), currentX, currentY, width, height);
         }
         if (characterState.equals("punching")){
+            stateTime += Gdx.graphics.getDeltaTime();
+            batch.draw(punchAnimation.getKeyFrame(stateTime, false), currentX, currentY, width, height);
 
         }
         batch.end();
