@@ -27,8 +27,8 @@ public class MainGame extends ApplicationAdapter {
 	public void create () {
 		madara = new Madara();
 		enemyWave = new EnemyWave();
-		enemyWave.addLeftEnemies(1);
-		enemyWave.addRightEnemies(1);
+		enemyWave.addRightEnemies(3);
+		enemyWave.addLeftEnemies(3);
 		background = new Background();
 		background.setPosition(0,0);
 		background.setSize(MAX_WIDTH, MAX_HEIGHT);
@@ -47,8 +47,9 @@ public class MainGame extends ApplicationAdapter {
 		background.renderBackground(camera);
 		madara.animationControler(enemyWave);
 		madara.animation(elapsedTime);
-		enemyWave.renderLeftEnemies(madara, elapsedTime);
 		enemyWave.renderRightEnemies(madara, elapsedTime);
+		enemyWave.renderLeftEnemies(madara, elapsedTime);
+
 
 
 	}

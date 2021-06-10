@@ -3,48 +3,64 @@ package com.uptech.game;
 import java.util.ArrayList;
 
 public class EnemyWave {
-    private ArrayList<Enemy> leftEnemies;
     private ArrayList<Enemy> rightEnemies;
+    private ArrayList<Enemy> leftEnemies;
+    private ArrayList<Enemy> deadEnemies;
 
     public EnemyWave(){
-        leftEnemies = new ArrayList<Enemy>();
         rightEnemies = new ArrayList<Enemy>();
-    }
-
-    public void addLeftEnemies(int numberOfEnemies){
-        for (int i = 0; i < numberOfEnemies; i++){
-            Enemy enemy = new Enemy(false);
-            leftEnemies.add(enemy);
-        }
+        leftEnemies = new ArrayList<Enemy>();
+        deadEnemies = new ArrayList<Enemy>();
     }
 
     public void addRightEnemies(int numberOfEnemies){
+        float startingX = 800;
+        float maxX = 400;
         for (int i = 0; i < numberOfEnemies; i++){
-            Enemy enemy = new Enemy(true);
+            Enemy enemy = new Enemy(false, i, this, startingX, maxX);
             rightEnemies.add(enemy);
+            startingX += 100;
+            maxX += 100;
         }
     }
 
-
-    public ArrayList<Enemy> getLeftEnemies(){
-        return leftEnemies;
+    public void addLeftEnemies(int numberOfEnemies){
+        float startingX = 0;
+        float maxX = 250;
+        for (int i = 0; i < numberOfEnemies; i++){
+            Enemy enemy = new Enemy(true, i, this, startingX, maxX);
+            leftEnemies.add(enemy);
+            startingX -= 100;
+            maxX -= 100;
+        }
     }
+
 
     public ArrayList<Enemy> getRightEnemies(){
         return rightEnemies;
     }
 
+    public ArrayList<Enemy> getLeftEnemies(){
+        return leftEnemies;
+    }
 
+
+    public void renderRightEnemies(Madara madara, float elapsedTime){
+            for(Enemy enemy : rightEnemies){
+                enemy.Ai(madara.getX());
+                enemy.animations(elapsedTime);
+        }
+    }
     public void renderLeftEnemies(Madara madara, float elapsedTime){
         for(Enemy enemy : leftEnemies){
             enemy.Ai(madara.getX());
             enemy.animations(elapsedTime);
         }
     }
-    public void renderRightEnemies(Madara madara, float elapsedTime){
-        for(Enemy enemy : rightEnemies){
-            enemy.Ai(madara.getX());
-            enemy.animations(elapsedTime);
-        }
-    }
+
+
+
+
+
+
 }

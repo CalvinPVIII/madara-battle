@@ -16,6 +16,8 @@ public class Madara {
     private float currentY = 100;
     private float width = 100;
     private float height = 150;
+    private int closestEnemyLeftId = 0;
+    private int closestEnemyRightId = 0;
 
 //    Texture Atlas Creation
     private TextureAtlas idleAtlas = new TextureAtlas("madara/idle1sheet/idle1spritesheet.atlas");
@@ -42,28 +44,56 @@ public class Madara {
                 width *= -1;
             }
             currentX += 10;
-            if(currentX - enemies.getLeftEnemies().get(0).getX() >= -130){
-                enemies.getLeftEnemies().get(0).damageTaken();
-                punchSound.play();
-            }else{
-                missSound.play();
-            }
-
+            attack(true, enemies);
         }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)){
             characterState = "punch";
             if (width > 0){
                 width *= -1;
             }
             currentX -= 10;
-            if(currentX - enemies.getRightEnemies().get(0).getX() <= 130){
-                enemies.getRightEnemies().get(0).damageTaken();
-                punchSound.play();
-            }else{
-                missSound.play();
-            }
+            attack(false, enemies);
 
         }
+
+    }
+
+    public void attack(boolean facingRight, EnemyWave enemies){
+        Enemy closestEnemy;
+        if(facingRight){
+            if (closestEnemyRightId <= enemies.getRightEnemies().size() -1){
+                 closestEnemy = enemies.getRightEnemies().get(closestEnemyRightId);
+            }else{
+                 closestEnemy = null;
+            }
+            if(closestEnemy != null && closestEnemy.getX() - currentX <= 100){
+                closestEnemy.damageTaken();
+                punchSound.play();
+                closestEnemyRightId ++;
+            }
+            if(closestEnemy == null){
+                missSound.play();
+            }
+        }
+
+        if(!facingRight){
+            if(closestEnemyLeftId <= enemies.getLeftEnemies().size()-1){
+                closestEnemy = enemies.getLeftEnemies().get(closestEnemyLeftId);
+            }else{
+                closestEnemy = null;
+            }
+            if (closestEnemy != null && currentX - closestEnemy.getX() <= 100){
+                closestEnemy.damageTaken();
+                punchSound.play();
+                closestEnemyLeftId ++;
+            }
+            if (closestEnemy == null){
+                missSound.play();
+            }
+        }
+
+
 
     }
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,8 +21,11 @@ public class Enemy {
     private float width;
     private float height = 120;
     private float difficultyModifier = 4 ;
-    private boolean facingRight;
+    private boolean isOnLeftSide;
     private int health = 1;
+    private int wavePosition;
+    private EnemyWave wave;
+    private float maxX;
 
     private Sound missSound = Gdx.audio.newSound(Gdx.files.internal("sounds/miss1.wav"));
 
@@ -38,46 +42,35 @@ public class Enemy {
     private com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> walkAnimation = new com.badlogic.gdx.graphics.g2d.Animation<TextureRegion>(1/10f, walkAtlas.getRegions());
     private com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> deathAnimation = new com.badlogic.gdx.graphics.g2d.Animation<TextureRegion>(1/10f, deathAtlas.getRegions());
 
-    public  Enemy(boolean facingRight){
-        this.facingRight = facingRight;
-        if (facingRight == false){
-            currentX = 500;
+    public  Enemy(boolean isOnLeftSide, int wavePosition, EnemyWave wave, float currentX, float maxX){
+        this.isOnLeftSide = isOnLeftSide;
+        this.wavePosition = wavePosition;
+        this.wave = wave;
+        this.currentX = currentX;
+        this.maxX = maxX;
+        if (isOnLeftSide == false){
             width = 80;
         }
-        if(facingRight == true){
-            currentX = 0;
+        if(isOnLeftSide == true){
             width = -80;
         }
 
     }
 
     public void Ai(float madaraX){
-
-
         if(health == 0){
-            characterState = "dead";
-            if (facingRight){
-                currentX --;
-            }else if (facingRight == false){
-                currentX ++;
-            }
-
-
+            die();
         }
-        if (!attackInRange(madaraX) && health > 0 && facingRight == false) {
-            characterState = "walking";
-            currentX -= 2* difficultyModifier;
 
-        }
-        if (!attackInRange(madaraX) && health > 0 && facingRight){
-            characterState = "walking";
-            currentX += 2* difficultyModifier;
+        if (!inPosition(madaraX) && health > 0 ) {
+            move();
         }
 
 
-        if (attackInRange(madaraX) && health > 0){
 
 
+        if (inPosition(madaraX) && health > 0){
+            characterState = "idle";
 
         }
 
@@ -87,42 +80,57 @@ public class Enemy {
 
     public void attack(){
 
+
     }
 
-    public boolean attackInRange(float madaraX){
-        if (facingRight && currentX >= madaraX - 50){
+    public void move(){
+        characterState = "walking";
+        if (isOnLeftSide){
+            currentX += 2* difficultyModifier;
+        }
+        if (!isOnLeftSide){
+            currentX -= 2* difficultyModifier;
+        }
+    }
+
+    public boolean inPosition(float madaraX){
+        if (isOnLeftSide && currentX <= maxX) {
+            return false;
+        }else if(!isOnLeftSide && currentX >= maxX){
+            return false;
+        }else{
             return true;
         }
-        if (!facingRight && currentX <= madaraX + 100){
-            return true;
-        }
-        return false;
+
     }
 
 
-    public void animations(float delta){
 
-        batch.begin();
-
-        if (characterState.equals("idle")){
-            batch.draw(idleAnimation.getKeyFrame(delta, true), currentX, currentY, width, height);
-        }
-        if (characterState.equals("walking")){
-            batch.draw(walkAnimation.getKeyFrame(delta, true), currentX, currentY, width, height);
-        }if (characterState.equals("dead")){
-            stateTime += Gdx.graphics.getDeltaTime();
-            batch.draw(deathAnimation.getKeyFrame(stateTime, false), currentX, currentY, width, height);
-        }
-        if (characterState.equals("punching")){
-            stateTime += Gdx.graphics.getDeltaTime();
-            batch.draw(punchAnimation.getKeyFrame(stateTime, false), currentX, currentY, width, height);
-
-        }
-        batch.end();
-    }
 
     public void die(){
+        characterState = "dead";
+        Enemy nextEnemy;
+        if (isOnLeftSide){
+            if (wave.getLeftEnemies().indexOf(this) == wave.getLeftEnemies().size()-1){
+                nextEnemy = null;
+            }else{
+                wave.getLeftEnemies().get(wavePosition + 1).setMaxX(maxX);
+            }
+//            currentX --;
+        }else if (!isOnLeftSide){
+            if(wave.getRightEnemies().indexOf(this) == wave.getRightEnemies().size()-1){
+                nextEnemy = null;
+            }else{
+                wave.getRightEnemies().get(wavePosition +1).setMaxX(maxX);
+            }
 
+//            currentX ++;
+
+        }
+    }
+
+    public void setMaxX(float maxX){
+        this.maxX = maxX;
     }
 
     public void damageTaken(){
@@ -138,6 +146,36 @@ public class Enemy {
         return currentX;
     }
 
+    public String getCharacterState(){return characterState;}
 
+    public int getWavePosition(){return wavePosition;}
+
+
+
+
+    public void animations(float delta){
+
+        batch.begin();
+
+        if (characterState.equals("idle")){
+            batch.draw(idleAnimation.getKeyFrame(delta, true), currentX, currentY, width, height);
+            stateTime = 0f;
+        }
+        if (characterState.equals("walking")){
+            batch.draw(walkAnimation.getKeyFrame(delta, true), currentX, currentY, width, height);
+        }if (characterState.equals("dead")){
+            stateTime += Gdx.graphics.getDeltaTime();
+            batch.draw(deathAnimation.getKeyFrame(stateTime, false), currentX, currentY, width, height);
+        }
+        if (characterState.equals("punching")){
+            stateTime += Gdx.graphics.getDeltaTime();
+            batch.draw(punchAnimation.getKeyFrame(stateTime, false), currentX, currentY, width, height);
+            if(punchAnimation.isAnimationFinished(stateTime)){
+                characterState = "idle";
+            }
+
+        }
+        batch.end();
+    }
 
 }
