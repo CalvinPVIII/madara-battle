@@ -26,7 +26,7 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		madara = new Madara();
-		enemyWave = new EnemyWave();
+		enemyWave = new EnemyWave(madara);
 		enemyWave.addRightEnemies(3);
 		enemyWave.addLeftEnemies(3);
 		background = new Background();

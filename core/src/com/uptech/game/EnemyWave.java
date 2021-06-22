@@ -6,16 +6,18 @@ public class EnemyWave {
     private ArrayList<Enemy> rightEnemies;
     private ArrayList<Enemy> leftEnemies;
     private ArrayList<Enemy> deadEnemies;
+    private Madara madara;
 
-    public EnemyWave(){
+    public EnemyWave(Madara madara){
         rightEnemies = new ArrayList<Enemy>();
         leftEnemies = new ArrayList<Enemy>();
         deadEnemies = new ArrayList<Enemy>();
+        this.madara = madara;
     }
 
     public void addRightEnemies(int numberOfEnemies){
         float startingX = 800;
-        float maxX = 400;
+        float maxX = madara.getX() + 100;
         for (int i = 0; i < numberOfEnemies; i++){
             Enemy enemy = new Enemy(false, i, this, startingX, maxX);
             rightEnemies.add(enemy);
@@ -26,7 +28,7 @@ public class EnemyWave {
 
     public void addLeftEnemies(int numberOfEnemies){
         float startingX = 0;
-        float maxX = 250;
+        float maxX = madara.getX() - 100;
         for (int i = 0; i < numberOfEnemies; i++){
             Enemy enemy = new Enemy(true, i, this, startingX, maxX);
             leftEnemies.add(enemy);
@@ -58,6 +60,18 @@ public class EnemyWave {
         }
     }
 
+        public void adjustMaxX(String leftOrRight, float amount){
+            if (leftOrRight.equals("left")){
+                for (Enemy enemy : leftEnemies){
+                    enemy.setMaxX(enemy.getMaxX() + amount);
+                }
+            }
+            if (leftOrRight.equals("right")){
+                for (Enemy enemy : rightEnemies){
+                    enemy.setMaxX(enemy.getMaxX() + amount);
+                }
+            }
+        }
 
 
 

@@ -133,6 +133,8 @@ public class Enemy {
         this.maxX = maxX;
     }
 
+    public float getMaxX(){return maxX;}
+
     public void damageTaken(){
         health --;
 
